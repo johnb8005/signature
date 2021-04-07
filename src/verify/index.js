@@ -8,6 +8,21 @@ const Content = () => {
   const [signature, setSignature] = useState("");
   const [verify, setVerify] = useState();
   const [errors, setErrors] = useState({});
+  const [checkedParams, setCheckedParams] = useState(false);
+  const urlParams = new URLSearchParams(window.location.search);
+  const myParam = urlParams.get("q");
+  if (myParam && !checkedParams) {
+    try {
+      const b = window.atob(myParam);
+      const a = JSON.parse(b);
+      setCheckedParams(true);
+      setSignature(a.signature);
+      setPublicKey(a.publicKey);
+      setContent(a.content);
+    } catch (err) {
+      console.log("could not parse");
+    }
+  }
   const handleSubmit = (a) => {
     a.preventDefault();
     const e = {};
@@ -71,6 +86,6 @@ const Content = () => {
   }), /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("button", {
     className: "btn btn-primary",
     type: "submit"
-  }, "Get Signature"));
+  }, "Verify Signature"));
 };
 export default () => /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("h1", null, "Check Signature"), /* @__PURE__ */ React.createElement(Content, null));

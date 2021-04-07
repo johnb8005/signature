@@ -1,3 +1,4 @@
+import {ab2str, str2ab} from "./utils.js";
 const algorithm = {
   name: "ECDSA",
   namedCurve: "P-384",
@@ -7,15 +8,6 @@ const keyUsages = ["sign", "verify"];
 const getHeaderFooter = (publicPrivate, beginEnd) => {
   const sep = "-".repeat(5);
   return sep + `${beginEnd} ${publicPrivate} KEY` + sep;
-};
-const ab2str = (buf) => String.fromCharCode.apply(null, new Uint8Array(buf));
-const str2ab = (str) => {
-  const buf = new ArrayBuffer(str.length);
-  const bufView = new Uint8Array(buf);
-  for (let i = 0, strLen = str.length; i < strLen; i++) {
-    bufView[i] = str.charCodeAt(i);
-  }
-  return buf;
 };
 export const exportKey = async (key, format, publicPrivate) => {
   const exported = await window.crypto.subtle.exportKey(format, key);
@@ -59,8 +51,6 @@ export const generateKeyPair = async () => {
   const exportedPublic = await exportPublicKey(keyPair.publicKey);
   return {private: exportedPrivate, public: exportedPublic};
 };
-const encoder = new TextEncoder();
-const decoder = new TextDecoder("utf-8");
 export const sign = async (privateKey, data) => {
   const binaryDerString = window.atob(data);
   const ab = str2ab(binaryDerString);

@@ -1,12 +1,20 @@
 import React, {useState} from "../../_snowpack/pkg/react.js";
+import {Link} from "../../_snowpack/pkg/react-router-dom.js";
+import {links} from "../link.js";
 import * as Crypto from "../crypto/ecc.js";
+import * as UCrypto from "../crypto/utils.js";
 import * as UtilUI from "../util-ui/index.js";
 const Signature = ({
   signature,
   content
-}) => /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "The Signature is ", /* @__PURE__ */ React.createElement(UtilUI.Copy, {
-  content: signature
-}), " ", /* @__PURE__ */ React.createElement("code", null, signature)), /* @__PURE__ */ React.createElement("p", null, "for content: "), /* @__PURE__ */ React.createElement("p", null, content));
+}) => {
+  const l = UCrypto.generateLink(content, void 0, signature);
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", null, "The Signature is ", /* @__PURE__ */ React.createElement(UtilUI.Copy, {
+    content: signature
+  }), " ", /* @__PURE__ */ React.createElement("code", null, signature)), /* @__PURE__ */ React.createElement("p", null, "for content: "), /* @__PURE__ */ React.createElement("p", null, content), /* @__PURE__ */ React.createElement(Link, {
+    to: links.verify.link + l
+  }, l));
+};
 const Content = () => {
   const [content, setContent] = useState("");
   const [privateKey, setPrivateKey] = useState("");
@@ -25,7 +33,8 @@ const Content = () => {
       Crypto.importPrivateKey(privateKey).then(async (cryptoKey) => {
         const signature2 = await Crypto.sign(cryptoKey, content);
         setSignature(signature2);
-      }).catch(() => {
+      }).catch((err) => {
+        console.log(err);
         e["privateKey"] = "private key is wrong";
         setErrors(e);
       });
