@@ -2,17 +2,14 @@ import * as __SNOWPACK_ENV__ from '../_snowpack/env.js';
 
 import React from "../_snowpack/pkg/react.js";
 import {Link, BrowserRouter as Router} from "../_snowpack/pkg/react-router-dom.js";
-const basename = __SNOWPACK_ENV__.SNOWPACK_PUBLIC_URL || "";
+import {menus} from "./link.js";
+const basename = __SNOWPACK_ENV__.SNOWPACK_PUBLIC_URL;
 const style = {
   borderTop: "1px solid #e5e5e5",
   borderBottom: "1px solid #e5e5e5",
   boxShadow: "0 .25rem .75rem rgba(0, 0, 0, .05)"
 };
 const title = "Digital Signature";
-const menus = [
-  {link: "/generate", name: "Generate"},
-  {link: "/get", name: "Get Public/Private key pair"}
-];
 function Layout({children}) {
   const header = /* @__PURE__ */ React.createElement("header", null, /* @__PURE__ */ React.createElement("div", {
     style,
