@@ -16,7 +16,7 @@
   "scripts": {
     "start": "SNOWPACK_PUBLIC_URL= snowpack dev",
     "build": "snowpack build",
-    "test": "jest"
+    "test": "echo \"no test\""
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
