@@ -17,4 +17,12 @@ jobs:
           node-version: 13
       - run: yarn
       - run: yarn test
-      - run: yarn build
+      - name: Build page
+        run: SNOWPACK_GIT_SHA=$GITHUB_SHA SNOWPACK_PUBLIC_URL=/signature yarn build
+      - name: add 404
+        run: cp build/index.html build/404.html
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: ./build
