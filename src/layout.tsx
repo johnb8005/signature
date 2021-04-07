@@ -2,6 +2,8 @@ import React from "react";
 
 import { Link, BrowserRouter as Router } from "react-router-dom";
 
+const basename: string = import.meta.env.SNOWPACK_PUBLIC_URL || "";
+
 const style = {
   borderTop: "1px solid #e5e5e5",
   borderBottom: "1px solid #e5e5e5",
@@ -37,7 +39,7 @@ function Layout({ children }: { children: any }) {
   );
 
   return (
-    <Router>
+    <Router basename={basename}>
       {header}
       <div className="container">{children}</div>
     </Router>
