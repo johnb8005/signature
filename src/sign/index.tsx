@@ -1,5 +1,8 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { links } from "../link";
 import * as Crypto from "../crypto/ecc";
+import * as UCrypto from "../crypto/utils";
 import * as UtilUI from "../util-ui";
 
 const Signature = ({
@@ -8,18 +11,23 @@ const Signature = ({
 }: {
   signature: string;
   content: string;
-}) => (
-  <>
-    <p>
-      The Signature is <UtilUI.Copy content={signature} />{" "}
-      <code>{signature}</code>
-    </p>
+}) => {
+  const l = UCrypto.generateLink(content, undefined, signature);
+  return (
+    <>
+      <p>
+        The Signature is <UtilUI.Copy content={signature} />{" "}
+        <code>{signature}</code>
+      </p>
 
-    <p>for content: </p>
+      <p>for content: </p>
 
-    <p>{content}</p>
-  </>
-);
+      <p>{content}</p>
+
+      <Link to={links.verify.link + l}>{l}</Link>
+    </>
+  );
+};
 
 const Content = () => {
   const [content, setContent] = useState<string>("");
@@ -46,7 +54,8 @@ const Content = () => {
 
           setSignature(signature);
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log(err);
           e["privateKey"] = "private key is wrong";
           setErrors(e);
         });

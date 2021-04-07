@@ -9,6 +9,27 @@ const Content = () => {
   const [signature, setSignature] = useState<string>("");
   const [verify, setVerify] = useState<boolean | undefined>();
   const [errors, setErrors] = useState<UtilUI.Error>({});
+  const [checkedParams, setCheckedParams] = useState<boolean>(false);
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const myParam = urlParams.get("q");
+
+  if (myParam && !checkedParams) {
+    try {
+      const b = window.atob(myParam);
+      const a: {
+        signature?: string;
+        publicKey?: string;
+        content?: string;
+      } = JSON.parse(b);
+      setCheckedParams(true);
+      setSignature(a.signature);
+      setPublicKey(a.publicKey);
+      setContent(a.content);
+    } catch (err) {
+      console.log("could not parse");
+    }
+  }
 
   const handleSubmit = (a: any) => {
     a.preventDefault();
@@ -96,7 +117,7 @@ const Content = () => {
       <br />
 
       <button className="btn btn-primary" type="submit">
-        Get Signature
+        Verify Signature
       </button>
     </form>
   );

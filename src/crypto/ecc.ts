@@ -1,3 +1,5 @@
+import { ab2str, str2ab } from "./utils";
+
 // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/exportKey
 
 /*
@@ -19,22 +21,6 @@ const getHeaderFooter = (
 ): string => {
   const sep = "-".repeat(5);
   return sep + `${beginEnd} ${publicPrivate} KEY` + sep;
-};
-
-const ab2str = (buf: ArrayBuffer) =>
-  String.fromCharCode.apply(null, new Uint8Array(buf));
-
-/*
-Convert a string into an ArrayBuffer
-from https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffer-to-and-from-String
-*/
-const str2ab = (str: string): ArrayBuffer => {
-  const buf = new ArrayBuffer(str.length);
-  const bufView = new Uint8Array(buf);
-  for (let i = 0, strLen = str.length; i < strLen; i++) {
-    bufView[i] = str.charCodeAt(i);
-  }
-  return buf;
 };
 
 export const exportKey = async (
@@ -120,9 +106,6 @@ export const generateKeyPair = async (): Promise<{
   return { private: exportedPrivate, public: exportedPublic };
 };
 
-const encoder = new TextEncoder();
-const decoder = new TextDecoder("utf-8");
-
 export const sign = async (
   privateKey: CryptoKey,
   data: string
@@ -145,7 +128,6 @@ export const verify = async (
   const binaryDerString = window.atob(data);
   // convert from a binary string to an ArrayBuffer
   const ab = str2ab(binaryDerString);
-  //const ab = encoder.encode(data);
   const binarySignature = window.atob(signature);
   const signatureAb = str2ab(binarySignature);
   const s = await crypto.subtle.verify(algorithm, publicKey, signatureAb, ab);

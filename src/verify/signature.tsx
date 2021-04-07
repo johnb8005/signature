@@ -1,5 +1,7 @@
 import React from "react";
-
+import { Link } from "react-router-dom";
+import { links } from "../link";
+import * as UCrypto from "../crypto/utils";
 const Signature = ({
   signature,
   content,
@@ -10,22 +12,32 @@ const Signature = ({
   content: string;
   publicKey: string;
   verify: boolean;
-}) => (
-  <>
-    <p>
-      The Signature is <code>{signature}</code>
-    </p>
+}) => {
+  const l =
+    links.verify.link + UCrypto.generateLink(content, publicKey, signature);
+  return (
+    <>
+      {verify === true && (
+        <div className={"alert alert-success"}>The signature is correct!</div>
+      )}
+      {verify === false && (
+        <div className={"alert alert-danger"}>The signature is wrong!</div>
+      )}
 
-    <p>for content: </p>
-
-    <p>{content}</p>
-
-    <p>and public key: </p>
-
-    <pre>{publicKey}</pre>
-
-    <pre>{JSON.stringify({ verify })}</pre>
-  </>
-);
+      <ul>
+        <li>
+          <Link to={l}>Direct Link</Link>
+        </li>
+        <li>Content: {content}</li>
+        <li>
+          Signature <code>{signature}</code>
+        </li>
+        <li>
+          Public key: <code>{publicKey}</code>
+        </li>
+      </ul>
+    </>
+  );
+};
 
 export default Signature;
