@@ -1,8 +1,9 @@
 import React from "react";
 
 import { Link, BrowserRouter as Router } from "react-router-dom";
+import { menus } from "./link";
 
-const basename: string = import.meta.env.SNOWPACK_PUBLIC_URL || "";
+const basename = import.meta.env.SNOWPACK_PUBLIC_URL;
 
 const style = {
   borderTop: "1px solid #e5e5e5",
@@ -11,11 +12,6 @@ const style = {
 };
 
 const title = "Digital Signature";
-
-const menus = [
-  { link: "/generate", name: "Generate" },
-  { link: "/get", name: "Get Public/Private key pair" },
-];
 
 function Layout({ children }: { children: any }) {
   const header = (

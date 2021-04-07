@@ -1,15 +1,26 @@
 import React from "react";
+import { Route, Switch } from "react-router-dom";
+import { links } from "./link";
 
-const T = () => {
-  console.log("d");
-  return <p>sdf</p>;
-};
+import Home from "./home";
+import Verify from "./verify";
+import GenerateKeyPair from "./generate";
+import Sign from "./sign";
 
-import { Link, BrowserRouter as Router, Route, Switch } from "react-router-dom";
+const NotFound = () => (
+  <p>
+    <i>Page Not Found</i>
+  </p>
+);
+
 export default () => {
   return (
     <Switch>
-      <Route path={"/"} component={T} />
+      <Route exact path={"/"} component={Home} />
+      <Route path={links.verify.link} component={Verify} />
+      <Route path={links.generateKeyPair.link} component={GenerateKeyPair} />
+      <Route path={links.sign.link} component={Sign} />
+      <Route component={NotFound} />
     </Switch>
   );
 };

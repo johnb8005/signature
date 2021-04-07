@@ -4,8 +4,38 @@
 Convert  an ArrayBuffer into a string
 from https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffer-to-and-from-String
 */
+
+const algorithm = {
+  name: "ECDSA",
+  namedCurve: "P-384",
+  hash: { name: "SHA-384" },
+};
+
+const keyUsages: KeyUsage[] = ["sign", "verify"];
+
+const getHeaderFooter = (
+  publicPrivate: "PUBLIC" | "PRIVATE",
+  beginEnd: "BEGIN" | "END"
+): string => {
+  const sep = "-".repeat(5);
+  return sep + `${beginEnd} ${publicPrivate} KEY` + sep;
+};
+
 const ab2str = (buf: ArrayBuffer) =>
   String.fromCharCode.apply(null, new Uint8Array(buf));
+
+/*
+Convert a string into an ArrayBuffer
+from https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffer-to-and-from-String
+*/
+const str2ab = (str: string): ArrayBuffer => {
+  const buf = new ArrayBuffer(str.length);
+  const bufView = new Uint8Array(buf);
+  for (let i = 0, strLen = str.length; i < strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
+};
 
 export const exportKey = async (
   key: CryptoKey,
@@ -15,12 +45,49 @@ export const exportKey = async (
   const exported = await window.crypto.subtle.exportKey(format, key);
   const str = ab2str(exported);
   const b64 = window.btoa(str);
-  const sep = "-".repeat(5);
   return [
-    sep + `BEGIN ${publicPrivate} KEY` + sep,
+    getHeaderFooter(publicPrivate, "BEGIN"),
     b64,
-    sep + `END ${publicPrivate} KEY` + sep,
+    getHeaderFooter(publicPrivate, "END"),
   ].join("\n");
+};
+
+export const importPrivateKey = (pem: string): Promise<CryptoKey> => {
+  // fetch the part of the PEM string between header and footer
+  const pemHeader = getHeaderFooter("PRIVATE", "BEGIN");
+  const pemFooter = getHeaderFooter("PRIVATE", "END");
+
+  const pemContents = pem.substring(
+    pemHeader.length,
+    pem.length - pemFooter.length
+  );
+  // base64 decode the string to get the binary data
+  const binaryDerString = window.atob(pemContents);
+  // convert from a binary string to an ArrayBuffer
+  const binaryDer = str2ab(binaryDerString);
+
+  return window.crypto.subtle.importKey("pkcs8", binaryDer, algorithm, true, [
+    "sign",
+  ]);
+};
+
+export const importPublicKey = (pem: string): Promise<CryptoKey> => {
+  // fetch the part of the PEM string between header and footer
+  const pemHeader = getHeaderFooter("PUBLIC", "BEGIN");
+  const pemFooter = getHeaderFooter("PUBLIC", "END");
+
+  const pemContents = pem.substring(
+    pemHeader.length,
+    pem.length - pemFooter.length
+  );
+  // base64 decode the string to get the binary data
+  const binaryDerString = window.atob(pemContents);
+  // convert from a binary string to an ArrayBuffer
+  const binaryDer = str2ab(binaryDerString);
+
+  return window.crypto.subtle.importKey("spki", binaryDer, algorithm, true, [
+    "verify",
+  ]);
 };
 
 export const exportPrivateKey = async (
@@ -30,24 +97,58 @@ export const exportPrivateKey = async (
 export const exportPublicKey = async (publicKey: CryptoKey) =>
   exportKey(publicKey, "spki", "PUBLIC");
 
-export const generateKeyPair = async () => {
+export const generateKeyPairRaw = async () => {
   // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/generateKey
   const keyPair = await window.crypto.subtle.generateKey(
-    {
-      name: "ECDSA",
-      namedCurve: "P-384",
-    },
+    algorithm,
     true,
-    ["sign", "verify"]
+    keyUsages
   );
+
+  return keyPair;
+};
+
+export const generateKeyPair = async (): Promise<{
+  private: string;
+  public: string;
+}> => {
+  const keyPair = await generateKeyPairRaw();
 
   const exportedPrivate = await exportPrivateKey(keyPair.privateKey);
   const exportedPublic = await exportPublicKey(keyPair.publicKey);
 
-  console.log({
-    keyPair,
+  return { private: exportedPrivate, public: exportedPublic };
+};
 
-    exportedPrivate,
-    exportedPublic,
-  });
+const encoder = new TextEncoder();
+const decoder = new TextDecoder("utf-8");
+
+export const sign = async (
+  privateKey: CryptoKey,
+  data: string
+): Promise<string> => {
+  const binaryDerString = window.atob(data);
+  // convert from a binary string to an ArrayBuffer
+  const ab = str2ab(binaryDerString);
+  const s = await crypto.subtle.sign(algorithm, privateKey, ab);
+  const str = ab2str(s);
+  const b64 = window.btoa(str);
+
+  return b64; //decoder.decode(s);
+};
+
+export const verify = async (
+  publicKey: CryptoKey,
+  signature: string,
+  data: string
+): Promise<boolean> => {
+  const binaryDerString = window.atob(data);
+  // convert from a binary string to an ArrayBuffer
+  const ab = str2ab(binaryDerString);
+  //const ab = encoder.encode(data);
+  const binarySignature = window.atob(signature);
+  const signatureAb = str2ab(binarySignature);
+  const s = await crypto.subtle.verify(algorithm, publicKey, signatureAb, ab);
+
+  return s;
 };
