@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
 const ghUrl = "https://github.com/johnb8005/signature";
+const sha = import.meta.env.SNOWPACK_GIT_SHA;
+const ghUrlSha = `${ghUrl}/commit/${sha}`;
 
 export default () => (
   <>
@@ -12,6 +14,12 @@ export default () => (
         <i className="fa fa-code"></i> Source
       </a>
       &nbsp;available under MIT license. Contributions are welcome.
+    </p>
+
+    <p>
+      <small>
+        <a href={ghUrlSha}>{sha.slice(0, 15)}</a>
+      </small>
     </p>
   </>
 );
