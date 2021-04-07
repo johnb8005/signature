@@ -1,5 +1,8 @@
+import * as __SNOWPACK_ENV__ from '../_snowpack/env.js';
+
 import React from "../_snowpack/pkg/react.js";
 import {Link, BrowserRouter as Router} from "../_snowpack/pkg/react-router-dom.js";
+const basename = __SNOWPACK_ENV__.SNOWPACK_PUBLIC_URL || "";
 const style = {
   borderTop: "1px solid #e5e5e5",
   borderBottom: "1px solid #e5e5e5",
@@ -25,7 +28,9 @@ function Layout({children}) {
     key: i,
     to: menu.link
   }, menu.name)))));
-  return /* @__PURE__ */ React.createElement(Router, null, header, /* @__PURE__ */ React.createElement("div", {
+  return /* @__PURE__ */ React.createElement(Router, {
+    basename
+  }, header, /* @__PURE__ */ React.createElement("div", {
     className: "container"
   }, children));
 }
