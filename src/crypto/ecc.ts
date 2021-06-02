@@ -9,7 +9,7 @@ from https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffe
 
 const algorithm = {
   name: "ECDSA",
-  namedCurve: "sect239k1",
+  namedCurve: "P-384",
   hash: { name: "SHA-384" },
 };
 
