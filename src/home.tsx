@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const ghUrl = "https://github.com/johnb8005/signature";
-const sha = import.meta.env.SNOWPACK_GIT_SHA || "arandomsha";
+const sha = import.meta.env.SNOWPACK_PUBLIC_GIT_SHA || "arandomsha";
 const ghUrlSha = `${ghUrl}/commit/${sha}`;
 
 export default () => (
