@@ -1,7 +1,7 @@
 import {ab2str, str2ab} from "./utils.js";
 const algorithm = {
   name: "ECDSA",
-  namedCurve: "sect239k1",
+  namedCurve: "P-384",
   hash: {name: "SHA-384"}
 };
 const keyUsages = ["sign", "verify"];
