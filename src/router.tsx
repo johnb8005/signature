@@ -7,6 +7,8 @@ import Verify from "./verify";
 import GenerateKeyPair from "./generate";
 import Sign from "./sign";
 
+import Symmetric from "./symmetric";
+
 const NotFound = () => (
   <p>
     <i>Page Not Found</i>
@@ -20,6 +22,7 @@ export default () => {
       <Route path={links.verify.link} component={Verify} />
       <Route path={links.generateKeyPair.link} component={GenerateKeyPair} />
       <Route path={links.sign.link} component={Sign} />
+      <Route path={links.symmetric.link} component={Symmetric} />
       <Route component={NotFound} />
     </Switch>
   );

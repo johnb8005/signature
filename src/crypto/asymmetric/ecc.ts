@@ -1,4 +1,4 @@
-import { ab2str, str2ab } from "./utils";
+import { ab2str, str2ab } from "../utils";
 
 // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/exportKey
 

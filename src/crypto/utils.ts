@@ -1,4 +1,4 @@
-export const ab2str = (buf: ArrayBuffer) =>
+export const ab2str = (buf: ArrayBuffer): string =>
   String.fromCharCode.apply(null, new Uint8Array(buf));
 
 /*
@@ -14,6 +14,12 @@ export const str2ab = (str: string): ArrayBuffer => {
   return buf;
 };
 
+export const ab2str2 = (ctBuffer: ArrayBuffer): string => {
+  const ctArray = Array.from(new Uint8Array(ctBuffer)); // ciphertext as byte array
+  const ctStr = ctArray.map((byte) => String.fromCharCode(byte)).join(""); // ciphertext as string
+  return btoa(ctStr);
+};
+
 export const generateLink = (
   content: string,
   publicKey: string,
@@ -23,3 +29,16 @@ export const generateLink = (
 
   return "?q=" + q;
 };
+
+export const toHexString = (s: Uint8Array) =>
+  Array.from(s)
+    .map((b) => ("00" + b.toString(16)).slice(-2))
+    .join("");
+
+export const fromHex = (s: string): Uint8Array =>
+  new Uint8Array(s.match(/.{2}/g).map((byte) => parseInt(byte, 16)));
+
+/*const strToUint8 = (s: string) => {
+  const ctStr: string = atob(s); // decode base64
+  return new Uint8Array(ctStr.match(/[\s\S]/g).map((ch) => ch.charCodeAt(0)));
+};*/

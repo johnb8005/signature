@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import * as Crypto from "../crypto/ecc";
+import * as Crypto from "../crypto/asymmetric/ecc";
 import * as UtilUI from "../util-ui";
 import Signature from "./signature";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import * as Crypto from "../crypto/ecc";
+import * as Crypto from "../crypto/asymmetric/ecc";
 import * as UI from "../util-ui";
 
 const Content = ({ data }: { data: { public: string; private: string } }) => {

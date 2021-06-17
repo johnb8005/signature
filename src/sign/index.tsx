@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { links } from "../link";
-import * as Crypto from "../crypto/ecc";
+import * as Crypto from "../crypto/asymmetric/ecc";
 import * as UCrypto from "../crypto/utils";
 import * as UtilUI from "../util-ui";
 
