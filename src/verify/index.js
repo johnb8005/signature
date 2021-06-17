@@ -1,5 +1,5 @@
 import React, {useState} from "../../_snowpack/pkg/react.js";
-import * as Crypto from "../crypto/ecc.js";
+import * as Crypto from "../crypto/asymmetric/ecc.js";
 import * as UtilUI from "../util-ui/index.js";
 import Signature from "./signature.js";
 const Content = () => {

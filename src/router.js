@@ -5,6 +5,7 @@ import Home from "./home.js";
 import Verify from "./verify/index.js";
 import GenerateKeyPair from "./generate/index.js";
 import Sign from "./sign/index.js";
+import Symmetric from "./symmetric/index.js";
 const NotFound = () => /* @__PURE__ */ React.createElement("p", null, /* @__PURE__ */ React.createElement("i", null, "Page Not Found"));
 export default () => {
   return /* @__PURE__ */ React.createElement(Switch, null, /* @__PURE__ */ React.createElement(Route, {
@@ -20,6 +21,9 @@ export default () => {
   }), /* @__PURE__ */ React.createElement(Route, {
     path: links.sign.link,
     component: Sign
+  }), /* @__PURE__ */ React.createElement(Route, {
+    path: links.symmetric.link,
+    component: Symmetric
   }), /* @__PURE__ */ React.createElement(Route, {
     component: NotFound
   }));

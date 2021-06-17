@@ -1,7 +1,7 @@
 import React, {useState} from "../../_snowpack/pkg/react.js";
 import {Link} from "../../_snowpack/pkg/react-router-dom.js";
 import {links} from "../link.js";
-import * as Crypto from "../crypto/ecc.js";
+import * as Crypto from "../crypto/asymmetric/ecc.js";
 import * as UCrypto from "../crypto/utils.js";
 import * as UtilUI from "../util-ui/index.js";
 const Signature = ({

@@ -4,6 +4,10 @@ export const links = {
   generateKeyPair: {
     name: "Generate Public/Private key pair",
     link: "/generateKeyPair"
+  },
+  symmetric: {
+    name: "Symmetric",
+    link: "/symmetric"
   }
 };
 export const menus = Object.values(links);

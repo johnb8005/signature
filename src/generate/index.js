@@ -1,5 +1,5 @@
 import React from "../../_snowpack/pkg/react.js";
-import * as Crypto from "../crypto/ecc.js";
+import * as Crypto from "../crypto/asymmetric/ecc.js";
 import * as UI from "../util-ui/index.js";
 const Content = ({data}) => {
   const d = new Date();

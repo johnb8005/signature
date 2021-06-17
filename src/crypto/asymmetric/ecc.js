@@ -1,4 +1,4 @@
-import {ab2str, str2ab} from "./utils.js";
+import {ab2str, str2ab} from "../utils.js";
 const algorithm = {
   name: "ECDSA",
   namedCurve: "P-384",
