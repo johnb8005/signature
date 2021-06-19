@@ -2,22 +2,23 @@
 // https://gist.github.com/chrisveness/43bcda93af9f646d083fad678071b90a
 import * as U from "../utils";
 
-const enc = new TextEncoder();
-const dec = new TextDecoder();
+import { webcrypto } from "crypto";
+
+const { subtle } = webcrypto;
+
+//const enc = new TextEncoder();
+//const dec = new TextDecoder();
 const ivlength = 16; // AES blocksize
 const algorithm = "AES-GCM";
 const importSecretKey = (rawKey: Uint8Array) =>
-  window.crypto.subtle.importKey("raw", rawKey, algorithm, true, [
-    "encrypt",
-    "decrypt",
-  ]);
+  subtle.importKey("raw", rawKey, algorithm, true, ["encrypt", "decrypt"]);
 
 const encrypt = (
   encoded: ArrayBuffer,
   key: CryptoKey,
   iv: Uint8Array
 ): Promise<ArrayBuffer> =>
-  window.crypto.subtle.encrypt(
+  subtle.encrypt(
     {
       name: algorithm,
       iv,
@@ -31,7 +32,7 @@ const decrypt = (
   key: CryptoKey,
   iv: Uint8Array
 ): Promise<ArrayBuffer> =>
-  window.crypto.subtle.decrypt(
+  subtle.decrypt(
     {
       name: algorithm,
       iv,
@@ -45,7 +46,7 @@ const encryptMessage = (
   key: CryptoKey,
   iv: Uint8Array
 ): Promise<ArrayBuffer> => {
-  const encoded: ArrayBuffer = enc.encode(message);
+  const encoded: ArrayBuffer = U.str2ab(message);
 
   return encrypt(encoded, key, iv);
 };
@@ -64,7 +65,7 @@ const decryptMessage = (
 };
 
 export const secretStringToCrypto = async (secret: string) =>
-  importSecretKey(enc.encode(secret));
+  importSecretKey(new Uint8Array(U.str2ab(secret)));
 
 export const encryptCompact = async (message: string, secret: string) => {
   // secret
@@ -90,5 +91,5 @@ export const decryptCompact = async (cipherPlusIv: string, secret: string) => {
   const cryptoSecret = await secretStringToCrypto(secret);
 
   const d = await decryptMessage(ctBase64, cryptoSecret, ivUint8);
-  return dec.decode(d);
+  return U.ab2str(d); //dec.decode(d);
 };

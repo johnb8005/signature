@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@types/node": "^15.12.3",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
     "@types/react-router": "^5.1.13",
@@ -16,12 +17,13 @@
   "scripts": {
     "start": "SNOWPACK_PUBLIC_URL= snowpack dev",
     "build": "snowpack build",
-    "test": "echo \"no test\""
+    "test": "jest"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
     "jest": "^26.6.3",
     "jest-environment-jsdom": "^26.6.2",
-    "ts-jest": "^26.5.4"
+    "ts-jest": "^26.5.4",
+    "typescript": "^4.3.3"
   }
 }
