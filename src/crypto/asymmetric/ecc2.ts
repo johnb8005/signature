@@ -62,7 +62,10 @@ export const encrypt = async (
 
 export const toCipherString = (
   ctBuffer: ArrayBuffer,
-  iv: Uint8Array
+  iv: Uint8Array,
+  filename: string,
+  filetype: string,
+  publicKey: string
 ): string => {
   const ctArray: number[] = Array.from(new Uint8Array(ctBuffer)); // ciphertext as byte array
   const ctStr: string = ctArray
@@ -72,21 +75,41 @@ export const toCipherString = (
     .map((b) => String.fromCharCode(b))
     .join(""); // iv as utf-8 string
 
-  return btoa(ivStr + ctStr);
+  return [
+    filename.replace(/_/g, "%5F"),
+    filetype.replace(/_/g, "%5F"),
+    publicKey,
+    btoa(ivStr + ctStr),
+  ].join("_");
 };
 
 export const cipherStringToIvAndCipher = (
-  ciphertext: string
-): { iv: Uint8Array; ctUint8: Uint8Array } => {
+  input: string
+): {
+  iv: Uint8Array;
+  ctUint8: Uint8Array;
+  filename: string;
+  filetype: string;
+  publicKey: string;
+} => {
+  const [filename, filetype, publicKey, ciphertext] = input.split("_");
+
   const decoded: string = atob(ciphertext);
+
   const ivStr = decoded.slice(0, 12); // decode base64 iv
   const iv = new Uint8Array(Array.from(ivStr).map((ch) => ch.charCodeAt(0))); // iv as Uint8Array
   const ctStr = decoded.slice(12); // decode base64 ciphertext
   const ctUint8 = new Uint8Array(
     Array.from(ctStr).map((ch) => ch.charCodeAt(0))
-  ); // ciphertext as Uint8Array
+  );
 
-  return { ctUint8, iv };
+  return {
+    ctUint8,
+    iv,
+    filename: decodeURIComponent(filename),
+    filetype: decodeURIComponent(filetype),
+    publicKey,
+  };
 };
 
 export const decrypt = async (

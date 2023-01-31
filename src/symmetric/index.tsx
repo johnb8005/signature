@@ -3,9 +3,7 @@
 import React from "react";
 
 import {
-  cipherStringToIvAndCipher,
   createKeyPair,
-  decrypt,
   deriveKey,
   encrypt,
   settings,
@@ -23,16 +21,11 @@ export default () => {
     const searchParams = new URLSearchParams(window.location.search);
     const queryParam = searchParams.get("publicKey");
 
-    if (queryParam) {
-      setPublicKey(queryParam);
-    } else {
-      createKeyPair().then(async ({ publicKey }) => {
-        console.log(publicKey);
-        const p = await crypto.subtle.exportKey("raw", publicKey);
-        console.log(p);
-        setPublicKey(ab2str(p));
-      });
+    if (!queryParam) {
+      alert("the link is faulty, the public key must be given");
+      return;
     }
+    setPublicKey(queryParam);
   }
 
   if (privateKey === "" && publicKey !== "") {
@@ -82,21 +75,27 @@ export default () => {
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const encrypted = await encrypt(fileUArray, sharedKey, iv);
 
-    const cipher = toCipherString(encrypted, iv); // <- this is what is to be shared (todo add filename and type)
+    const cipher = toCipherString(
+      encrypted,
+      iv,
+      file.name,
+      file.type,
+      publicKeyOwn
+    ); // <- this is what is to be shared (todo add filename and type)
 
     downloadBlob(cipher, "cipher.txt", "application/txt");
 
     // upon receiving
-    const cipherExtra = cipherStringToIvAndCipher(cipher);
-    const decrypted = await decrypt(
+    //const cipherExtra = cipherStringToIvAndCipher(cipher);
+    /*const decrypted = await decrypt(
       cipherExtra.ctUint8,
       sharedKey,
       cipherExtra.iv
-    );
+    );*/
     console.log(cipher);
-    console.log(fileUArray, file.name, file.type, decrypted);
+    // console.log(fileUArray, file.name, file.type, decrypted);
 
-    downloadBlob(decrypted, file.name, file.type);
+    // downloadBlob(decrypted, file.name, file.type);
   };
 
   return (
@@ -109,11 +108,12 @@ export default () => {
           className="form-control"
           type="text"
           value={publicKey}
-          onChange={(v) => setPublicKey(v.target.value)}
+          disabled={true}
+          //  onChange={(v) => setPublicKey(v.target.value)}
         />
       </div>
 
-      <hr />
+      {/*   <hr />
 
       <div className="form-group">
         <label htmlFor="exampleInputEmail1">Private Key</label>
@@ -133,7 +133,7 @@ export default () => {
           value={publicKeyOwn}
           onChange={(v) => setPublicKeyOwn(v.target.value)}
         />
-      </div>
+  </div>*/}
 
       <input type="file" onChange={handleUpload} />
     </>

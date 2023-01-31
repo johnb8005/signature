@@ -7,90 +7,101 @@ import {
   createKeyPair,
   decrypt,
   deriveKey,
-  encrypt,
   settings,
-  toCipherString,
 } from "../crypto/asymmetric/ecc2";
 import { ab2str, str2ab } from "../crypto/utils";
 import links from "../link";
 import { downloadBlob } from "../symmetric/utils";
 
+enum State {
+  loading = 0,
+  init = 1,
+  importCipher,
+}
+
 export default () => {
-  const [extPublicKey, setExtPublicKey] = React.useState<string>("");
+  const [state, setState] = React.useState<State>(State.loading);
   const [publicKey, setPublicKey] = React.useState<string>("");
   const [privateKey, setPrivateKey] = React.useState<string>("");
 
-  if (publicKey === "") {
-    createKeyPair().then(async ({ publicKey }) => {
-      console.log(publicKey);
-      const p = await crypto.subtle.exportKey("raw", publicKey);
-      console.log(p);
-      setPublicKey(ab2str(p));
-    });
-  }
-
-  if (privateKey === "" && publicKey !== "") {
+  if (state === State.loading) {
     createKeyPair().then(async ({ publicKey, privateKey }) => {
       const p = await crypto.subtle.exportKey("pkcs8", privateKey);
       setPrivateKey(ab2str(p));
       const p2 = await crypto.subtle.exportKey("raw", publicKey);
       setPublicKey(ab2str(p2));
+      setState(State.init);
     });
+
+    return <p>Loading</p>;
   }
 
-  const handleUpload = async ({
-    target,
-  }: React.ChangeEvent<HTMLInputElement>) => {
-    const { files } = target;
+  if (state === State.importCipher) {
+    const handleUpload = async ({
+      target,
+    }: React.ChangeEvent<HTMLInputElement>) => {
+      const { files } = target;
 
-    if (files === null) {
-      throw Error("files is null");
-    }
+      if (files === null) {
+        throw Error("files is null");
+      }
 
-    if (files.length === 0) {
-      throw Error("files array is empty");
-    }
+      if (files.length === 0) {
+        throw Error("files array is empty");
+      }
 
-    const [file] = files;
+      const [file] = files;
 
-    const bobPublicKey = await crypto.subtle.importKey(
-      "raw",
-      str2ab(extPublicKey),
-      settings.algorithm,
-      settings.extractable,
-      []
+      const alicePrivateKey = await crypto.subtle.importKey(
+        "pkcs8",
+        str2ab(privateKey),
+        settings.algorithm,
+        settings.extractable,
+        ["deriveKey"]
+      );
+
+      const cipher = await file.text();
+
+      // upon receiving
+      const cipherExtra = cipherStringToIvAndCipher(cipher);
+
+      const bobPublicKey = await crypto.subtle.importKey(
+        "raw",
+        str2ab(cipherExtra.publicKey),
+        settings.algorithm,
+        settings.extractable,
+        []
+      );
+      const sharedKey = await deriveKey(alicePrivateKey, bobPublicKey);
+
+      const decrypted = await decrypt(
+        cipherExtra.ctUint8,
+        sharedKey,
+        cipherExtra.iv
+      );
+
+      downloadBlob(decrypted, cipherExtra.filename, cipherExtra.filetype);
+      setState(State.init);
+    };
+
+    return (
+      <>
+        <h1>Retrieve File </h1>
+
+        <input type="file" onChange={handleUpload} />
+
+        <button
+          onClick={() => setState(State.init)}
+          className="btn btn-secondary"
+        >
+          Reset
+        </button>
+      </>
     );
-
-    const alicePrivateKey = await crypto.subtle.importKey(
-      "pkcs8",
-      str2ab(privateKey),
-      settings.algorithm,
-      settings.extractable,
-      ["deriveKey"]
-    );
-
-    const sharedKey = await deriveKey(alicePrivateKey, bobPublicKey);
-
-    console.log(sharedKey);
-
-    const cipher = await file.text();
-
-    // upon receiving
-    const cipherExtra = cipherStringToIvAndCipher(cipher);
-    const decrypted = await decrypt(
-      cipherExtra.ctUint8,
-      sharedKey,
-      cipherExtra.iv
-    );
-
-    const filename = "a.png";
-    const filetype = "image/png";
-
-    downloadBlob(decrypted, filename, filetype);
-  };
+  }
 
   const url =
-    (basename || "") +
+    (basename || "").slice(0, -1) +
     links.createFileTransfer.link +
     "?publicKey=" +
     encodeURIComponent(publicKey);
@@ -99,7 +110,7 @@ export default () => {
     <>
       <h1>Initiate File Transfer</h1>
 
-      <div className="form-group">
+      {/*  <div className="form-group">
         <label htmlFor="exampleInputEmail1">Private Key</label>
         <input
           className="form-control"
@@ -117,27 +128,22 @@ export default () => {
           value={publicKey}
           onChange={(v) => setPublicKey(v.target.value)}
         />
-      </div>
+
+        <i className="fa fa-key" />
+  </div>*/}
 
       <p>
-        <a target="_blank" href={url}>
-          <code>{url}</code>
+        <a className="btn btn-primary" target="_blank" href={url}>
+          File Transfer Link
         </a>
       </p>
 
-      <hr />
-
-      <div className="form-group">
-        <label htmlFor="exampleInputEmail1">External Public Key</label>
-        <input
-          className="form-control"
-          type="text"
-          value={extPublicKey}
-          onChange={(v) => setExtPublicKey(v.target.value)}
-        />
-      </div>
-
-      <input type="file" onChange={handleUpload} />
+      <button
+        onClick={() => setState(State.importCipher)}
+        className="btn btn-primary"
+      >
+        Go to import cipher step <i className="fa fa-arrow-right" />
+      </button>
     </>
   );
 };
