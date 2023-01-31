@@ -1,6 +1,7 @@
 //https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#aes-gcm
 //https://gist.github.com/chrisveness/43bcda93af9f646d083fad678071b90a
 import React from "react";
+import { basename } from "../config";
 import {
   cipherStringToIvAndCipher,
   createKeyPair,
@@ -89,6 +90,7 @@ export default () => {
   };
 
   const url =
+    (basename || "") +
     links.createFileTransfer.link +
     "?publicKey=" +
     encodeURIComponent(publicKey);
@@ -118,7 +120,7 @@ export default () => {
       </div>
 
       <p>
-        <a href={url}>
+        <a target="_blank" href={url}>
           <code>{url}</code>
         </a>
       </p>
