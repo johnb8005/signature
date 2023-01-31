@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { github } from "./config";
+import { github, version } from "./config";
 
 export default () => (
   <>
@@ -14,7 +14,9 @@ export default () => (
     </p>
 
     <p>
-      <small>todo</small>
+      <small>
+        <a href={github.version}>{version}</a>
+      </small>
     </p>
   </>
 );
