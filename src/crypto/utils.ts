@@ -1,5 +1,5 @@
 export const ab2str = (buf: ArrayBuffer): string =>
-  String.fromCharCode.apply(null, new Uint8Array(buf));
+  String.fromCharCode.apply(null, new Uint8Array(buf) as any);
 
 /*
 Convert a string into an ArrayBuffer
@@ -22,7 +22,7 @@ export const ab2str2 = (ctBuffer: ArrayBuffer): string => {
 
 export const generateLink = (
   content: string,
-  publicKey: string,
+  publicKey: string | undefined,
   signature: string
 ) => {
   const q = window.btoa(JSON.stringify({ content, publicKey, signature }));
@@ -35,8 +35,14 @@ export const toHexString = (s: Uint8Array) =>
     .map((b) => ("00" + b.toString(16)).slice(-2))
     .join("");
 
-export const fromHex = (s: string): Uint8Array =>
-  new Uint8Array(s.match(/.{2}/g).map((byte) => parseInt(byte, 16)));
+export const fromHex = (s: string): Uint8Array => {
+  const prg = s.match(/.{2}/g)
+  if (!prg) {
+   return new Uint8Array()
+  }
+  const rg = prg.map((byte) => parseInt(byte, 16))
+  return new Uint8Array(rg);
+}
 
 /*const strToUint8 = (s: string) => {
   const ctStr: string = atob(s); // decode base64

@@ -23,9 +23,17 @@ const Content = () => {
         content?: string;
       } = JSON.parse(b);
       setCheckedParams(true);
-      setSignature(a.signature);
-      setPublicKey(a.publicKey);
-      setContent(a.content);
+
+      if (a.signature) {
+        setSignature(a.signature);
+      }
+
+      if (a.publicKey) {
+        setPublicKey(a.publicKey);
+      }
+      if (a.content) {
+        setContent(a.content);
+      }
     } catch (err) {
       console.log("could not parse");
     }

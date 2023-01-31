@@ -34,7 +34,7 @@ export const withLoader = <A,>({
   Component,
 }: {
   promise: () => Promise<A>;
-  Component: ({ data: A }) => JSX.Element;
+  Component: (props:{ data: A }) => JSX.Element;
 }) => {
   const [content, setContent] = useState<A | undefined>();
 

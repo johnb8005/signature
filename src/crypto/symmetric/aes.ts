@@ -56,8 +56,14 @@ const decryptMessage = (
   iv: Uint8Array
 ): Promise<ArrayBuffer> => {
   const ctStr = atob(ctBase64); // decode base64 ciphertext
+  const prg = ctStr.match(/[\s\S]/g)
+
+  if (!prg) {
+    throw Error('prg is null')
+  }
+  const rg = prg.map((ch) => ch.charCodeAt(0))
   const ctUint8 = new Uint8Array(
-    ctStr.match(/[\s\S]/g).map((ch) => ch.charCodeAt(0))
+  rg
   ); // ciphertext as Uint8Array
 
   return decrypt(ctUint8, key, iv);

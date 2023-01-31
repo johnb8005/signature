@@ -1,9 +1,8 @@
 import React from "react";
 
 import { Link, BrowserRouter as Router } from "react-router-dom";
+import { basename } from "./config";
 import { menus } from "./link";
-
-const basename = import.meta.env.SNOWPACK_PUBLIC_URL;
 
 const style = {
   borderTop: "1px solid #e5e5e5",
