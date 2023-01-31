@@ -13,6 +13,7 @@ const Signature = ({
   content: string;
 }) => {
   const l = UCrypto.generateLink(content, undefined, signature);
+
   return (
     <>
       <p>

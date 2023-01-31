@@ -64,7 +64,7 @@ export const cipherStringToIvAndCipher = (ciphertext:string):{iv: Uint8Array, ct
   return { ctUint8, iv }
 }
 
-export const decrypt = async (encryptedMessage: ArrayBuffer, sharedSecretKey: CryptoKey, iv: Uint8Array):Promise<string> => {
+export const decrypt = async (encryptedMessage: ArrayBuffer, sharedSecretKey: CryptoKey, iv: Uint8Array):Promise<ArrayBuffer> => {
   // Decrypt the message
 
 
@@ -77,7 +77,7 @@ export const decrypt = async (encryptedMessage: ArrayBuffer, sharedSecretKey: Cr
     (encryptedMessage)
   );
 
-  return new TextDecoder().decode(decryptedMessage);
+  return decryptedMessage;
   
 }
 

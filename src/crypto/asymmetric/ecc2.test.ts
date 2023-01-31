@@ -30,12 +30,12 @@ describe('create keypairs for Alice and Bob: encrypt and decrypt messages', asyn
 
     test('decrypt', async () => {
       const decryptedMessage = await decrypt(ctBuffer, k1, iv);
-      expect(decryptedMessage).toBe(message) 
+      expect(new TextDecoder().decode(decryptedMessage)).toBe(message) 
     });
 
     test('decrypt with k2', async () => {
         const decryptedMessage = await decrypt(ctBuffer, k2, iv);
-        expect(decryptedMessage).toBe(message) 
+        expect(new TextDecoder().decode(decryptedMessage)).toBe(message) 
       });
 
     test('extract iv and cipher', async () => {
