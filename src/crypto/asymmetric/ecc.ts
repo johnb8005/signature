@@ -28,7 +28,7 @@ export const exportKey = async (
   format: "pkcs8" | "raw" | "spki",
   publicPrivate: "PUBLIC" | "PRIVATE"
 ): Promise<string> => {
-  const exported = await window.crypto.subtle.exportKey(format, key);
+  const exported = await crypto.subtle.exportKey(format, key);
   const str = ab2str(exported);
   const b64 = window.btoa(str);
   return [
@@ -52,7 +52,7 @@ export const importPrivateKey = (pem: string): Promise<CryptoKey> => {
   // convert from a binary string to an ArrayBuffer
   const binaryDer = str2ab(binaryDerString);
 
-  return window.crypto.subtle.importKey("pkcs8", binaryDer, algorithm, true, [
+  return crypto.subtle.importKey("pkcs8", binaryDer, algorithm, true, [
     "sign",
   ]);
 };
@@ -71,7 +71,7 @@ export const importPublicKey = (pem: string): Promise<CryptoKey> => {
   // convert from a binary string to an ArrayBuffer
   const binaryDer = str2ab(binaryDerString);
 
-  return window.crypto.subtle.importKey("spki", binaryDer, algorithm, true, [
+  return crypto.subtle.importKey("spki", binaryDer, algorithm, true, [
     "verify",
   ]);
 };
@@ -85,7 +85,7 @@ export const exportPublicKey = async (publicKey: CryptoKey) =>
 
 export const generateKeyPairRaw = async () => {
   // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/generateKey
-  const keyPair = await window.crypto.subtle.generateKey(
+  const keyPair = await crypto.subtle.generateKey(
     algorithm,
     true,
     keyUsages

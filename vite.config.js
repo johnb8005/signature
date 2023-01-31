@@ -5,7 +5,7 @@ import react from "@vitejs/plugin-react";
 const baseConfig =  {
   plugins: [react()],
   test: {
-    // ...
+    environment: "jsdom"
   }
 };
 
