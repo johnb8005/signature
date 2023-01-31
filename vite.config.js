@@ -14,7 +14,7 @@ const baseConfig =  {
 export default defineConfig(({ command, mode, ssrBuild }) => {  
   // if  `mode===ghpages`: we add the path prefix to match the path prefix of gh pages
   if (mode === 'ghpages') {
-    return {...baseConfig, base: "/boilerplate_vite/" };
+    return {...baseConfig, base: "/signature/" };
   }
   
   return baseConfig;
