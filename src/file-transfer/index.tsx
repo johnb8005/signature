@@ -1,7 +1,6 @@
 //https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#aes-gcm
 //https://gist.github.com/chrisveness/43bcda93af9f646d083fad678071b90a
 import React from "react";
-
 import {
   cipherStringToIvAndCipher,
   createKeyPair,
@@ -12,27 +11,21 @@ import {
   toCipherString,
 } from "../crypto/asymmetric/ecc2";
 import { ab2str, str2ab } from "../crypto/utils";
-import { downloadBlob } from "./utils";
+import links from "../link";
+import { downloadBlob } from "../symmetric/utils";
 
 export default () => {
+  const [extPublicKey, setExtPublicKey] = React.useState<string>("");
   const [publicKey, setPublicKey] = React.useState<string>("");
-  const [publicKeyOwn, setPublicKeyOwn] = React.useState<string>("");
   const [privateKey, setPrivateKey] = React.useState<string>("");
 
   if (publicKey === "") {
-    const searchParams = new URLSearchParams(window.location.search);
-    const queryParam = searchParams.get("publicKey");
-
-    if (queryParam) {
-      setPublicKey(queryParam);
-    } else {
-      createKeyPair().then(async ({ publicKey }) => {
-        console.log(publicKey);
-        const p = await crypto.subtle.exportKey("raw", publicKey);
-        console.log(p);
-        setPublicKey(ab2str(p));
-      });
-    }
+    createKeyPair().then(async ({ publicKey }) => {
+      console.log(publicKey);
+      const p = await crypto.subtle.exportKey("raw", publicKey);
+      console.log(p);
+      setPublicKey(ab2str(p));
+    });
   }
 
   if (privateKey === "" && publicKey !== "") {
@@ -40,7 +33,7 @@ export default () => {
       const p = await crypto.subtle.exportKey("pkcs8", privateKey);
       setPrivateKey(ab2str(p));
       const p2 = await crypto.subtle.exportKey("raw", publicKey);
-      setPublicKeyOwn(ab2str(p2));
+      setPublicKey(ab2str(p2));
     });
   }
 
@@ -59,12 +52,9 @@ export default () => {
 
     const [file] = files;
 
-    const fileAb = await file.arrayBuffer();
-    const fileUArray = new Uint8Array(fileAb);
-
     const bobPublicKey = await crypto.subtle.importKey(
       "raw",
-      str2ab(publicKey),
+      str2ab(extPublicKey),
       settings.algorithm,
       settings.extractable,
       []
@@ -79,12 +69,10 @@ export default () => {
     );
 
     const sharedKey = await deriveKey(alicePrivateKey, bobPublicKey);
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const encrypted = await encrypt(fileUArray, sharedKey, iv);
 
-    const cipher = toCipherString(encrypted, iv); // <- this is what is to be shared (todo add filename and type)
+    console.log(sharedKey);
 
-    downloadBlob(cipher, "cipher.txt", "application/txt");
+    const cipher = await file.text();
 
     // upon receiving
     const cipherExtra = cipherStringToIvAndCipher(cipher);
@@ -93,27 +81,21 @@ export default () => {
       sharedKey,
       cipherExtra.iv
     );
-    console.log(cipher);
-    console.log(fileUArray, file.name, file.type, decrypted);
 
-    downloadBlob(decrypted, file.name, file.type);
+    const filename = "a.png";
+    const filetype = "image/png";
+
+    downloadBlob(decrypted, filename, filetype);
   };
+
+  const url =
+    links.createFileTransfer.link +
+    "?publicKey=" +
+    encodeURIComponent(publicKey);
 
   return (
     <>
-      <h1>Symmetric</h1>
-
-      <div className="form-group">
-        <label htmlFor="exampleInputEmail1">Public Key</label>
-        <input
-          className="form-control"
-          type="text"
-          value={publicKey}
-          onChange={(v) => setPublicKey(v.target.value)}
-        />
-      </div>
-
-      <hr />
+      <h1>Initiate File Transfer</h1>
 
       <div className="form-group">
         <label htmlFor="exampleInputEmail1">Private Key</label>
@@ -130,8 +112,26 @@ export default () => {
         <input
           className="form-control"
           type="text"
-          value={publicKeyOwn}
-          onChange={(v) => setPublicKeyOwn(v.target.value)}
+          value={publicKey}
+          onChange={(v) => setPublicKey(v.target.value)}
+        />
+      </div>
+
+      <p>
+        <a href={url}>
+          <code>{url}</code>
+        </a>
+      </p>
+
+      <hr />
+
+      <div className="form-group">
+        <label htmlFor="exampleInputEmail1">External Public Key</label>
+        <input
+          className="form-control"
+          type="text"
+          value={extPublicKey}
+          onChange={(v) => setExtPublicKey(v.target.value)}
         />
       </div>
 

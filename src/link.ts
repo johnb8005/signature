@@ -9,6 +9,14 @@ export const links = {
     name: "Symmetric",
     link: "/symmetric",
   },
+  initFileTransfer: {
+    name: "Initiate File Transfer",
+    link: "/init-file-transfer",
+  },
+  createFileTransfer: {
+    name: "Create File Transfer",
+    link: "/create-file-transfer",
+  },
 };
 
 export const menus: { name: string; link: string }[] = Object.values(links);

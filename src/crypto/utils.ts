@@ -1,11 +1,18 @@
-export const ab2str = (buf: ArrayBuffer): string =>
+export const ab2str3 = (buf: ArrayBuffer): string =>
   String.fromCharCode.apply(null, new Uint8Array(buf) as any);
+
+export const ab2str = (arrayBuffer: ArrayBuffer) =>
+  btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer) as any));
+
+export const str2ab = (base64: string) => {
+  return Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)).buffer;
+};
 
 /*
 Convert a string into an ArrayBuffer
 from https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffer-to-and-from-String
 */
-export const str2ab = (str: string): ArrayBuffer => {
+export const str2ab2 = (str: string): ArrayBuffer => {
   const buf = new ArrayBuffer(str.length);
   const bufView = new Uint8Array(buf);
   for (let i = 0, strLen = str.length; i < strLen; i++) {
@@ -36,13 +43,13 @@ export const toHexString = (s: Uint8Array) =>
     .join("");
 
 export const fromHex = (s: string): Uint8Array => {
-  const prg = s.match(/.{2}/g)
+  const prg = s.match(/.{2}/g);
   if (!prg) {
-   return new Uint8Array()
+    return new Uint8Array();
   }
-  const rg = prg.map((byte) => parseInt(byte, 16))
+  const rg = prg.map((byte) => parseInt(byte, 16));
   return new Uint8Array(rg);
-}
+};
 
 /*const strToUint8 = (s: string) => {
   const ctStr: string = atob(s); // decode base64

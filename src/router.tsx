@@ -8,6 +8,7 @@ import GenerateKeyPair from "./generate";
 import Sign from "./sign";
 
 import Symmetric from "./symmetric";
+import InitFileTransfer from "./file-transfer/index";
 
 const NotFound = () => (
   <p>
@@ -23,6 +24,8 @@ export default () => {
       <Route path={links.generateKeyPair.link} component={GenerateKeyPair} />
       <Route path={links.sign.link} component={Sign} />
       <Route path={links.symmetric.link} component={Symmetric} />
+      <Route path={links.initFileTransfer.link} component={InitFileTransfer} />
+      <Route path={links.createFileTransfer.link} component={Symmetric} />
       <Route component={NotFound} />
     </Switch>
   );
