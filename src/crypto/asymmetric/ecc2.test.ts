@@ -45,6 +45,6 @@ describe('create keypairs for Alice and Bob: encrypt and decrypt messages', asyn
 
     test('decrypted with extracted iv and cipher', async () => {
         const decryptedMessage = await decrypt(extracted.ctUint8, k1, extracted.iv)
-        expect(decryptedMessage).toBe(message) 
+        expect(new TextDecoder().decode(decryptedMessage)).toBe(message) 
     })
 })
