@@ -1,5 +1,5 @@
 export const title = "Vite Boilerplate";
-const ghUrl = "https://github.com/nexys-system/boilerplate_vite";
+const ghUrl = "https://github.com/johnb8005/signature";
 
 export const version: string = import.meta.env.VITE_VERSION || "unset_version";
 export const sha: string = import.meta.env.VITE_GIT_SHA || "unset_sha";
