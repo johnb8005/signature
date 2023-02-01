@@ -133,16 +133,17 @@ export default () => {
   </div>*/}
 
       <p>
-        <a className="btn btn-primary" target="_blank" href={url}>
-          File Transfer Link
+        <a className="btn btn-outline-primary" target="_blank" href={url}>
+          <i className="fa fa-link" />
+          &nbsp; File Transfer Link
         </a>
       </p>
 
       <button
         onClick={() => setState(State.importCipher)}
-        className="btn btn-primary"
+        className="btn btn-outline-primary"
       >
-        Go to import cipher step <i className="fa fa-arrow-right" />
+        Import encrypted file <i className="fa fa-arrow-right" />
       </button>
     </>
   );
