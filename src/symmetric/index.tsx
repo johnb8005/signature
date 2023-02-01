@@ -23,7 +23,7 @@ export default () => {
 
     if (!queryParam) {
       alert("the link is faulty, the public key must be given");
-      return;
+      return <></>;
     }
     setPublicKey(queryParam);
   }
