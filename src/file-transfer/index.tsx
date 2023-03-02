@@ -36,6 +36,11 @@ export default () => {
     return <p>Loading</p>;
   }
 
+  const handleDownloadKeyPair = () => {
+    downloadBlob(publicKey, "public.txt", "text/plain");
+    downloadBlob(privateKey, "private.txt", "text/plain");
+  };
+
   if (state === State.importCipher) {
     const handleUpload = async ({
       target,
@@ -144,6 +149,16 @@ export default () => {
         className="btn btn-outline-primary"
       >
         Import encrypted file <i className="fa fa-arrow-right" />
+      </button>
+
+      <br />
+      <button
+        className="btn btn-outline-secondary"
+        type="button"
+        id="button-addon1"
+        onClick={handleDownloadKeyPair}
+      >
+        <i className="fa fa-key" /> Download Generated Keypair
       </button>
     </>
   );
