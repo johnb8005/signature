@@ -10,6 +10,7 @@ import {
   toCipherString,
 } from "../../crypto/asymmetric/ecc2";
 import { ab2str, str2ab } from "../../crypto/utils";
+import DownloadGeneratedKeyPair from "../download-generated-keypair";
 import { downloadBlob } from "../utils";
 
 enum State {
@@ -128,38 +129,12 @@ export default () => {
       alert("Public Key of Counterpart copied");
     };
 
-    const handleDownloadKeyPair = () => {
-      downloadBlob(publicKeyOwn, "public.txt", "text/plain");
-      downloadBlob(privateKey, "private.txt", "text/plain");
-    };
-
     return (
       <>
         <h1>Share File Secretly</h1>
 
         <div className="row">
           <div className="col-6">
-            {/*   <hr />
-
-      <div className="form-group">
-        <label htmlFor="exampleInputEmail1">Private Key</label>
-        <input
-          className="form-control"
-          type="text"
-          value={privateKey}
-          onChange={(v) => setPrivateKey(v.target.value)}
-        />
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="exampleInputEmail1">Public Key</label>
-        <input
-          className="form-control"
-          type="text"
-          value={publicKeyOwn}
-          onChange={(v) => setPublicKeyOwn(v.target.value)}
-        />
-  </div>*/}
             <div className="mb-3">
               <label className="form-label">
                 Upload file to be shared secretly
@@ -195,14 +170,10 @@ export default () => {
               </div>
             </div>
             <div className="mb-3">
-              <button
-                className="btn btn-outline-secondary"
-                type="button"
-                id="button-addon1"
-                onClick={handleDownloadKeyPair}
-              >
-                <i className="fa fa-key" /> Download Generated Keypair
-              </button>
+              <DownloadGeneratedKeyPair
+                publicKey={publicKeyOwn}
+                privateKey={privateKey}
+              />
             </div>
           </div>
         </div>
