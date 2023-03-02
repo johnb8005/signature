@@ -7,8 +7,8 @@ import Verify from "./verify";
 import GenerateKeyPair from "./generate";
 import Sign from "./sign";
 
-import Symmetric from "./symmetric";
 import InitFileTransfer from "./file-transfer/index";
+import FileTransferUpload from "./file-transfer/upload";
 
 const NotFound = () => (
   <p>
@@ -23,9 +23,12 @@ export default () => {
       <Route path={links.verify.link} component={Verify} />
       <Route path={links.generateKeyPair.link} component={GenerateKeyPair} />
       <Route path={links.sign.link} component={Sign} />
-      <Route path={links.symmetric.link} component={Symmetric} />
+      <Route path={links.symmetric.link} component={FileTransferUpload} />
       <Route path={links.initFileTransfer.link} component={InitFileTransfer} />
-      <Route path={links.createFileTransfer.link} component={Symmetric} />
+      <Route
+        path={links.createFileTransfer.link}
+        component={FileTransferUpload}
+      />
       <Route component={NotFound} />
     </Switch>
   );

@@ -8,9 +8,9 @@ import {
   encrypt,
   settings,
   toCipherString,
-} from "../crypto/asymmetric/ecc2";
-import { ab2str, str2ab } from "../crypto/utils";
-import { downloadBlob } from "./utils";
+} from "../../crypto/asymmetric/ecc2";
+import { ab2str, str2ab } from "../../crypto/utils";
+import { downloadBlob } from "../utils";
 
 enum State {
   idle = 0,

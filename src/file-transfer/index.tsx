@@ -11,7 +11,9 @@ import {
 } from "../crypto/asymmetric/ecc2";
 import { ab2str, str2ab } from "../crypto/utils";
 import links from "../link";
-import { downloadBlob } from "../symmetric/utils";
+import { downloadBlob } from "./utils";
+
+import RetrieveFile from "./retrieve-file";
 
 enum State {
   loading = 0,
@@ -90,18 +92,10 @@ export default () => {
     };
 
     return (
-      <>
-        <h1>Retrieve File </h1>
-
-        <input type="file" onChange={handleUpload} />
-
-        <button
-          onClick={() => setState(State.init)}
-          className="btn btn-secondary"
-        >
-          Reset
-        </button>
-      </>
+      <RetrieveFile
+        onReset={() => setState(State.init)}
+        onUpload={handleUpload}
+      />
     );
   }
 
@@ -114,28 +108,6 @@ export default () => {
   return (
     <>
       <h1>Initiate File Transfer</h1>
-
-      {/*  <div className="form-group">
-        <label htmlFor="exampleInputEmail1">Private Key</label>
-        <input
-          className="form-control"
-          type="text"
-          value={privateKey}
-          onChange={(v) => setPrivateKey(v.target.value)}
-        />
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="exampleInputEmail1">Public Key</label>
-        <input
-          className="form-control"
-          type="text"
-          value={publicKey}
-          onChange={(v) => setPublicKey(v.target.value)}
-        />
-
-        <i className="fa fa-key" />
-  </div>*/}
 
       <p>
         <a className="btn btn-outline-primary" target="_blank" href={url}>
